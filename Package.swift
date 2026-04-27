@@ -34,5 +34,6 @@ let package = Package(
         .target(name: "DijjiPush",     dependencies: ["DijjiCore"], path: "Sources/DijjiPush"),
         .target(name: "DijjiMessages", dependencies: ["DijjiCore"], path: "Sources/DijjiMessages"),
         .testTarget(name: "DijjiCoreTests", dependencies: ["DijjiCore"], path: "Tests/DijjiCoreTests"),
+        .testTarget(name: "DijjiMessagesTests", dependencies: ["DijjiMessages"], path: "Tests/DijjiMessagesTests"),
     ]
 )

@@ -84,11 +84,39 @@ The host app is responsible for setting up APNs entitlements + the Push Notifica
 
 ## In-app messages (`DijjiMessages`)
 
-`v1.0-alpha` ships polling + event firing only. The native UIKit renderer (banner / bottom-sheet / modal) lands in v1.1.
+Native UIKit renderer for three message types — **banner** (top/bottom strip, optional auto-dismiss), **bottom_sheet** (slide-up modal with drag-to-dismiss), and **modal** (centered card with backdrop). Theme-tinted to match your dashboard's site theme.
 
 ```swift
 import DijjiMessages
-DijjiMessages.startPolling()  // call once after Dijji.initialize
+
+// Call once after Dijji.initialize. Polls /t/app/inbox every 60s
+// while the app is foreground. Messages render automatically.
+DijjiMessages.startPolling()
+```
+
+Three events fire automatically through `DijjiCore`:
+- `__dijji_message_received` — pulled from inbox, queued for display
+- `__dijji_message_clicked` — user tapped CTA (`cta_url` opened)
+- `__dijji_message_dismissed` — with `outcome` ∈ `user_closed` / `cta_tapped` / `auto_expired`
+
+These show up in the Dijji dashboard's custom events feed and can be used in funnels (e.g. *received → clicked* conversion rate per message).
+
+### Message JSON shape (from `/t/app/inbox`)
+
+```json
+{
+  "id": "msg_42",
+  "kind": "banner",        // banner | bottom_sheet | modal
+  "config": {
+    "title": "Welcome back",
+    "body": "We picked 3 jobs for you",
+    "cta_text": "See them",
+    "cta_url": "/jobs",
+    "position": "top",     // banner only — top | bottom
+    "theme": "purple",     // purple | cyan | emerald | amber | rose | indigo | slate | mono | "#hex"
+    "ttl_seconds": 8       // banner default 8s; sheet/modal default no auto-dismiss
+  }
+}
 ```
 
 ## Privacy
@@ -114,8 +142,8 @@ Apache 2.0. See [LICENSE](LICENSE).
 
 | Version | Scope | Status |
 |---|---|---|
-| v1.0-alpha | Two-line init, lifecycle auto-capture, custom events, user props, NSException crash capture, push token registration, deep-link routing | **Active development** |
-| v1.1 | Native in-app message renderer (banner / sheet / modal) | Planned |
+| v1.0-alpha | Two-line init, lifecycle auto-capture, custom events, user props, NSException crash capture, push token registration, deep-link routing | Shipped |
+| v1.1-alpha | Native in-app message renderer (banner / sheet / modal) with theme support, drag-to-dismiss, queue-and-present | **Shipped** |
 | v1.2 | POSIX signal crash handler &middot; Mach exception port handler for pure-Swift crashes | Planned |
 | v1.3 | Live Activities (iOS 16+) &middot; Notification Service Extension for rich pushes | Q4 2026 |
 | v2.0 | SwiftUI-native message components &middot; Core Data offline queue | 2027 |

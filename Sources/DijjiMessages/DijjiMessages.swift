@@ -4,19 +4,21 @@ import DijjiCore
 import UIKit
 #endif
 
-/// In-app messages. V1.0-alpha is a stub — only the polling + event firing
-/// are implemented. The actual banner / bottom-sheet / modal renderer
-/// lands in v1.1 (mirrors the dijji-messages Android module's MessageHost).
+/// In-app messages — full UIKit renderer (v1.1).
 ///
-/// What this DOES today:
-///   - Polls /t/app/inbox every 60s while app is foreground
-///   - Fires __dijji_message_received for each pending message
-///   - Marks messages delivered (the GET endpoint does this server-side)
+/// Polls `/t/app/inbox` every N seconds while the app is foreground.
+/// Each pending message is parsed and handed to MessageHost which picks
+/// the right renderer by kind (banner / bottom_sheet / modal). The host
+/// queues messages so only one is visible at a time; the rest present
+/// in arrival order.
 ///
-/// What's coming in v1.1:
-///   - Native UIKit renderer for kind=banner / bottom_sheet / modal
-///   - Message dismiss / CTA handling
-///   - Theme support matching the dashboard's site_theme
+/// Messages fire three event types automatically:
+///   - `__dijji_message_received` when the SDK pulls it from the inbox
+///   - `__dijji_message_clicked` when the user taps the CTA
+///   - `__dijji_message_dismissed` with outcome=user_closed/cta_tapped/auto_expired
+///
+/// All events go through standard track() — they show up in the Dijji
+/// dashboard's custom events feed and can be used in funnels.
 public enum DijjiMessages {
 
     private static var pollTimer: Timer?
@@ -58,11 +60,11 @@ public enum DijjiMessages {
                   let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let messages = obj["messages"] as? [[String: Any]] else { return }
             for m in messages {
-                Dijji.track("__dijji_message_received", properties: [
-                    "message_id": m["id"] as? String ?? "",
-                    "kind": m["kind"] as? String ?? "",
-                ])
-                // Render hook — v1.1 will instantiate UIKit views here.
+                // Parse — bad rows are skipped, not fatal. The host queues
+                // and presents one at a time so we don't spam the user when
+                // multiple messages land in the same poll.
+                guard let parsed = DijjiMessage.parse(m) else { continue }
+                MessageHost.shared.show(parsed)
             }
         }.resume()
     }
