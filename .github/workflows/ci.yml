@@ -1,0 +1,59 @@
+# CI for the iOS SDK. Runs on every push + PR. Two jobs:
+#
+#   1. swift-build  — `swift build` on the GitHub macOS runner. Catches
+#                     manifest errors and pure-Swift compile errors that
+#                     don't depend on UIKit / UIApplication.
+#   2. xcode-build  — full iOS-target build via xcodebuild against the
+#                     simulator. Catches UIKit / UserNotifications path
+#                     compile errors. Doesn't run tests yet — those need
+#                     a host app for the simulator and we're SwiftPM only
+#                     in v1.0-alpha (host app comes in v1.1).
+#
+# Free for public repos. Avg ~3 minutes per push.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  swift-build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Swift version
+        run: swift --version
+      - name: Build (macOS host target)
+        run: swift build
+      - name: Test
+        run: swift test
+
+  xcode-build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Available Xcode versions
+        run: ls /Applications | grep -i xcode
+      - name: Build for iOS Simulator
+        run: |
+          xcodebuild build \
+            -scheme DijjiCore \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO
+      - name: Build push module
+        run: |
+          xcodebuild build \
+            -scheme DijjiPush \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO
+      - name: Build messages module
+        run: |
+          xcodebuild build \
+            -scheme DijjiMessages \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO
