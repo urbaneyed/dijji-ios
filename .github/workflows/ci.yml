@@ -34,26 +34,32 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Available Xcode versions
-        run: ls /Applications | grep -i xcode
-      - name: Build for iOS Simulator
+      - name: Toolchain info
+        run: |
+          xcodebuild -version
+          xcrun xcodebuild -showsdks | grep -E 'iphone|ios' || true
+      # Use `generic/platform=iOS Simulator` rather than a named device —
+      # the runner has the iOS Simulator SDK but not always the runtime
+      # for a specific phone model. Generic builds the slice without
+      # requiring a particular sim runtime to be downloaded first.
+      - name: Build DijjiCore for iOS Simulator
         run: |
           xcodebuild build \
             -scheme DijjiCore \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -destination 'generic/platform=iOS Simulator' \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO
-      - name: Build push module
+      - name: Build DijjiPush
         run: |
           xcodebuild build \
             -scheme DijjiPush \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -destination 'generic/platform=iOS Simulator' \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO
-      - name: Build messages module
+      - name: Build DijjiMessages
         run: |
           xcodebuild build \
             -scheme DijjiMessages \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -destination 'generic/platform=iOS Simulator' \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO
