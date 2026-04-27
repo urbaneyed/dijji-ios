@@ -47,6 +47,13 @@ final class DijjiStorage {
         get { defaults.dictionary(forKey: prefix + "user_props") ?? [:] }
     }
 
+    /// Wipe every key written by this storage. Test-only.
+    func clearAll() {
+        for key in defaults.dictionaryRepresentation().keys where key.hasPrefix(prefix) {
+            defaults.removeObject(forKey: key)
+        }
+    }
+
     func setUserProperty(key: String, value: Any?) {
         var props = userProperties
         if let v = value {

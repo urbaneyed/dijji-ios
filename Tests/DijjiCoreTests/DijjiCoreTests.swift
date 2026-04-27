@@ -6,12 +6,16 @@ import XCTest
 /// push round-trip) needs an iOS simulator and runs via Xcode.
 final class DijjiCoreTests: XCTestCase {
 
+    override func setUp() {
+        super.setUp()
+        // The shared static SDK instance + UserDefaults state both need to
+        // be cleared between tests since XCTest doesn't isolate static
+        // singletons. Each test starts from a known-zero state.
+        Dijji._resetForTesting(siteKey: "ws_test123")
+    }
+
     override func tearDown() {
-        // Clear any persisted state so tests don't bleed into each other.
-        let defaults = UserDefaults.standard
-        for key in defaults.dictionaryRepresentation().keys where key.hasPrefix("com.dijji.sdk.") {
-            defaults.removeObject(forKey: key)
-        }
+        Dijji._resetForTesting(siteKey: "ws_test123")
         super.tearDown()
     }
 

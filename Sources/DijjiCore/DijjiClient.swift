@@ -120,8 +120,12 @@ public final class DijjiClient {
     }
 
     func setOptedOut(_ optedOut: Bool) {
+        // Write the flag synchronously so callers reading isOptedOut
+        // immediately afterward see the right value. The lifecycle +
+        // queue side-effects can happen async — they don't block the
+        // observable opt-out state.
+        storage.isOptedOut = optedOut
         internalQueue.async {
-            self.storage.isOptedOut = optedOut
             if optedOut {
                 self.queue.clearPending()
                 self.lifecycle.detach()

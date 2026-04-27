@@ -18,7 +18,12 @@ import PackageDescription
 
 let package = Package(
     name: "Dijji",
-    platforms: [.iOS(.v13)],
+    // Primary target is iOS 13+. macOS 11+ is declared as a courtesy so
+    // `swift build` (which compiles for the host) succeeds on macOS dev
+    // machines — gives the build access to UserNotifications + UIKit
+    // surrogates. Real consumers integrate via iOS — the macOS slice is
+    // dev-only convenience.
+    platforms: [.iOS(.v13), .macOS(.v11)],
     products: [
         .library(name: "DijjiCore",     targets: ["DijjiCore"]),
         .library(name: "DijjiPush",     targets: ["DijjiPush"]),

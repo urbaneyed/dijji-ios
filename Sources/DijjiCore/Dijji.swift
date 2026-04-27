@@ -106,4 +106,15 @@ public enum Dijji {
     /// Site key, exposed so optional modules can build their own API
     /// requests without re-injecting it.
     public static var siteKey: String? { shared?.siteKey }
+
+    /// Test-only reset — clears the shared client + persisted state for
+    /// the given site_key. Marked internal so production code can't touch
+    /// it; @testable imports in DijjiCoreTests can. Calling this in
+    /// production would silently lose visitor identity.
+    internal static func _resetForTesting(siteKey: String? = nil) {
+        if let s = siteKey {
+            DijjiStorage(siteKey: s).clearAll()
+        }
+        shared = nil
+    }
 }
