@@ -143,7 +143,8 @@ Apache 2.0. See [LICENSE](LICENSE).
 | Version | Scope | Status |
 |---|---|---|
 | v1.0-alpha | Two-line init, lifecycle auto-capture, custom events, user props, NSException crash capture, push token registration, deep-link routing | Shipped |
-| v1.1-alpha | Native in-app message renderer (banner / sheet / modal) with theme support, drag-to-dismiss, queue-and-present | **Shipped** |
-| v1.2 | POSIX signal crash handler &middot; Mach exception port handler for pure-Swift crashes | Planned |
+| v1.1-alpha | Native in-app message renderer (banner / sheet / modal) with theme support, drag-to-dismiss, queue-and-present | Shipped |
+| v1.2-alpha | POSIX signal crash handler — catches pure-Swift crashes (fatalError, forced unwrap nil, array OOB) via SIGABRT/SIGTRAP/SIGSEGV/SIGBUS/SIGILL/SIGFPE. Marker-file pattern: write on crash via async-signal-safe APIs, send next launch | **Shipped** |
+| v1.3 | Mach exception port handler for stricter coverage &middot; backtrace symbolication via dSYM upload | Planned |
 | v1.3 | Live Activities (iOS 16+) &middot; Notification Service Extension for rich pushes | Q4 2026 |
 | v2.0 | SwiftUI-native message components &middot; Core Data offline queue | 2027 |

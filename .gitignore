@@ -3,6 +3,9 @@
 .swiftpm/
 Package.resolved
 
+# xcodebuild output (created by `xcodebuild ... -derivedDataPath build`)
+build/
+
 # Xcode
 *.xcodeproj/xcuserdata/
 *.xcworkspace/xcuserdata/

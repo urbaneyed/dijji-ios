@@ -62,6 +62,12 @@ public final class DijjiClient {
             DijjiLogger.debug("opted out — start() is a no-op")
             return
         }
+        // Send any crash that the previous run captured BEFORE installing
+        // new handlers — if processing the pending dump itself crashes,
+        // we don't want to overwrite it with our own marker.
+        SignalHandler.processPendingCrashIfAny(
+            visitorId: visitorId, siteKey: siteKey, apiBase: apiBase
+        )
         crashHandler.install()
         lifecycle.onForeground = { [weak self] in self?.handleForeground() }
         lifecycle.onBackground = { [weak self] in self?.handleBackground() }

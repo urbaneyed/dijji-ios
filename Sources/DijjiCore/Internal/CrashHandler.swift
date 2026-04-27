@@ -41,6 +41,10 @@ final class CrashHandler {
             // Forward to whoever else was registered.
             if let prior = CrashHandler.previousException { prior(exception) }
         }
+        // POSIX signal handlers — catches pure-Swift crashes (fatalError,
+        // forced unwrap nil, array OOB) that NSException misses. Marker
+        // file written on crash, sent on next launch.
+        SignalHandler.install()
     }
 
     private static var shared: CrashHandler?
