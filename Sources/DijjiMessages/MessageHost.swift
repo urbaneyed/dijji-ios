@@ -86,6 +86,26 @@ final class MessageHost {
                 message: message, on: host,
                 onDismiss: { [weak self] reason in self?.didDismiss(message, reason: reason) }
             )
+        case .hero:
+            HeroPresenter.present(
+                message: message, on: host,
+                onDismiss: { [weak self] reason in self?.didDismiss(message, reason: reason) }
+            )
+        case .nps:
+            NpsPresenter.present(
+                message: message, on: host,
+                onDismiss: { [weak self] reason in self?.didDismiss(message, reason: reason) }
+            )
+        case .reactions:
+            ReactionsPresenter.present(
+                message: message, on: host,
+                onDismiss: { [weak self] reason in self?.didDismiss(message, reason: reason) }
+            )
+        case .countdown:
+            CountdownPresenter.present(
+                message: message, on: host,
+                onDismiss: { [weak self] reason in self?.didDismiss(message, reason: reason) }
+            )
         }
         #endif
     }

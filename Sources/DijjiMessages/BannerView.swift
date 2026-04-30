@@ -60,6 +60,27 @@ final class BannerView: UIView {
         let rgb = DijjiTheme.color(for: message.theme)
         backgroundColor = UIColor(red: rgb.red, green: rgb.green, blue: rgb.blue, alpha: 1)
 
+        // Optional 40pt thumbnail at the leading edge — only when image_url
+        // is set and the URL successfully decodes. Fail-soft on miss.
+        var thumbView: UIImageView? = nil
+        if let imgUrl = message.imageUrl, !imgUrl.isEmpty {
+            let v = UIImageView()
+            v.contentMode = .scaleAspectFill
+            v.clipsToBounds = true
+            v.layer.cornerRadius = 8
+            v.backgroundColor = UIColor(white: 1, alpha: 0.18)
+            v.translatesAutoresizingMaskIntoConstraints = false
+            DijjiImageLoader.load(imgUrl, into: v)
+            addSubview(v)
+            NSLayoutConstraint.activate([
+                v.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 18),
+                v.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor),
+                v.widthAnchor.constraint(equalToConstant: 40),
+                v.heightAnchor.constraint(equalToConstant: 40),
+            ])
+            thumbView = v
+        }
+
         // Vertical stack — title above body. If only one is set the layout
         // collapses to a single line cleanly.
         let stack = UIStackView()
@@ -121,7 +142,7 @@ final class BannerView: UIView {
         // mode; bottom mode adds the home-indicator inset via safe area
         // anchors below.
         NSLayoutConstraint.activate([
-            stack.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 18),
+            stack.leadingAnchor.constraint(equalTo: thumbView?.trailingAnchor ?? safeAreaLayoutGuide.leadingAnchor, constant: thumbView != nil ? 12 : 18),
             stack.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor),
             stack.trailingAnchor.constraint(lessThanOrEqualTo: ctaPill.leadingAnchor, constant: -10),
 

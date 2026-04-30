@@ -76,6 +76,17 @@ private final class ModalViewController: UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         card.addSubview(stack)
 
+        if let imgUrl = message.imageUrl, !imgUrl.isEmpty {
+            let imgView = UIImageView()
+            imgView.contentMode = .scaleAspectFill
+            imgView.clipsToBounds = true
+            imgView.layer.cornerRadius = 12
+            imgView.backgroundColor = UIColor(white: 0.1, alpha: 1)
+            imgView.heightAnchor.constraint(equalTo: imgView.widthAnchor, multiplier: 9.0/16.0).isActive = true
+            DijjiImageLoader.load(imgUrl, into: imgView)
+            stack.addArrangedSubview(imgView)
+        }
+
         if let t = message.title, !t.isEmpty {
             let lbl = UILabel()
             lbl.text = t
