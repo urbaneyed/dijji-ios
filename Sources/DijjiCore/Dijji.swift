@@ -107,6 +107,11 @@ public enum Dijji {
     /// requests without re-injecting it.
     public static var siteKey: String? { shared?.siteKey }
 
+    /// Ingestion base URL (defaults to `https://dijji.com`). Optional
+    /// modules read this to build request URLs without the customer
+    /// app having to thread it through.
+    public static var apiBase: String? { shared?.apiBase }
+
     /// Test-only reset — clears the shared client + persisted state for
     /// the given site_key. Marked internal so production code can't touch
     /// it; @testable imports in DijjiCoreTests can. Calling this in

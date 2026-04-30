@@ -23,17 +23,22 @@ let package = Package(
     // machines — gives the build access to UserNotifications + UIKit
     // surrogates. Real consumers integrate via iOS — the macOS slice is
     // dev-only convenience.
+    //
+    // DijjiLiveActivity needs ActivityKit (iOS 16.1+) so its target
+    // declares a higher floor. Apps on older iOS just don't link it.
     platforms: [.iOS(.v13), .macOS(.v11)],
     products: [
-        .library(name: "DijjiCore",     targets: ["DijjiCore"]),
-        .library(name: "DijjiPush",     targets: ["DijjiPush"]),
-        .library(name: "DijjiMessages", targets: ["DijjiMessages"]),
+        .library(name: "DijjiCore",          targets: ["DijjiCore"]),
+        .library(name: "DijjiPush",          targets: ["DijjiPush"]),
+        .library(name: "DijjiMessages",      targets: ["DijjiMessages"]),
+        .library(name: "DijjiLiveActivity",  targets: ["DijjiLiveActivity"]),
     ],
     targets: [
-        .target(name: "DijjiCore",     path: "Sources/DijjiCore"),
-        .target(name: "DijjiPush",     dependencies: ["DijjiCore"], path: "Sources/DijjiPush"),
-        .target(name: "DijjiMessages", dependencies: ["DijjiCore"], path: "Sources/DijjiMessages"),
-        .testTarget(name: "DijjiCoreTests", dependencies: ["DijjiCore"], path: "Tests/DijjiCoreTests"),
+        .target(name: "DijjiCore",          path: "Sources/DijjiCore"),
+        .target(name: "DijjiPush",          dependencies: ["DijjiCore"], path: "Sources/DijjiPush"),
+        .target(name: "DijjiMessages",      dependencies: ["DijjiCore"], path: "Sources/DijjiMessages"),
+        .target(name: "DijjiLiveActivity",  dependencies: ["DijjiCore"], path: "Sources/DijjiLiveActivity"),
+        .testTarget(name: "DijjiCoreTests",     dependencies: ["DijjiCore"],     path: "Tests/DijjiCoreTests"),
         .testTarget(name: "DijjiMessagesTests", dependencies: ["DijjiMessages"], path: "Tests/DijjiMessagesTests"),
     ]
 )
