@@ -105,13 +105,22 @@ private final class HeroViewController: UIViewController {
         }
 
         if let c = message.ctaText, !c.isEmpty {
-            let btn = makeButton(title: c, bg: accent, fg: .white)
+            let btn = UIButton(type: .system)
+            btn.setTitle(c, for: .normal)
+            btn.setTitleColor(.white, for: .normal)
+            btn.titleLabel?.font = .systemFont(ofSize: 15, weight: .semibold)
+            btn.backgroundColor = accent
+            btn.layer.cornerRadius = 10
             btn.addTarget(self, action: #selector(ctaTapped), for: .touchUpInside)
             stack.addArrangedSubview(btn)
             btn.heightAnchor.constraint(equalToConstant: 52).isActive = true
         }
         if let s = message.secondaryCtaText, !s.isEmpty {
-            let btn = makeButton(title: s, bg: .clear, fg: UIColor(white: 0.5, alpha: 1))
+            let btn = UIButton(type: .system)
+            btn.setTitle(s, for: .normal)
+            btn.setTitleColor(UIColor(white: 0.5, alpha: 1), for: .normal)
+            btn.titleLabel?.font = .systemFont(ofSize: 14)
+            btn.backgroundColor = .clear
             btn.addTarget(self, action: #selector(secondaryTapped), for: .touchUpInside)
             stack.addArrangedSubview(btn)
             btn.heightAnchor.constraint(equalToConstant: 44).isActive = true
