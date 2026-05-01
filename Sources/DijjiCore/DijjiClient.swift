@@ -148,6 +148,15 @@ public final class DijjiClient {
 
     // MARK: - Push (called from optional DijjiPush module via Dijji.shared)
 
+    /// Survey answer / complete POST. Called from DijjiMessages's
+    /// SurveyView after each question and once at the end. Fire-and-forget;
+    /// the response_id was stamped server-side at inbox delivery so missing
+    /// answers don't break correlation, just leave gaps in the result row.
+    /// Public so DijjiMessages can call without exposing the private Api.
+    public func postSurvey(_ body: [String: Any]) {
+        api.postSurvey(body)
+    }
+
     /// Register an APNs device token. Called from the host app's
     /// `application(_:didRegisterForRemoteNotificationsWithDeviceToken:)`
     /// (via `DijjiPush.registerToken(_:)`).

@@ -18,7 +18,7 @@ enum DeviceContext {
         var ctx: [String: Any] = [:]
 
         ctx["sdk_platform"] = "ios"
-        ctx["sdk_version"]  = "1.0.0-alpha"
+        ctx["sdk_version"]  = "1.5.0-alpha"
 
         let info = Bundle.main.infoDictionary ?? [:]
         ctx["app_version"]     = info["CFBundleShortVersionString"] as? String ?? "unknown"

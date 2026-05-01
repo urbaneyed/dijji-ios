@@ -27,6 +27,14 @@ public enum DijjiMessages {
     /// Idempotent — calling twice doesn't double the poll rate.
     public static func startPolling(every seconds: TimeInterval = 60) {
         DispatchQueue.main.async {
+            // Wire the survey-post callback once — SurveyView ships answers
+            // back via this closure so the renderer doesn't need a direct
+            // reference to DijjiClient's private Api. nil siteKey means the
+            // SDK isn't initialized; we still install the callback so a
+            // later initialize works without re-wiring.
+            MessageHost.shared.onSurveyPost = { body in
+                Dijji.shared?.postSurvey(body)
+            }
             pollTimer?.invalidate()
             pollTimer = Timer.scheduledTimer(withTimeInterval: seconds, repeats: true) { _ in
                 pollOnce()

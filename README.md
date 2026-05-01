@@ -2,7 +2,7 @@
 
 > Analytics, push, in-app messages, and crash capture for iOS apps. From one `init()` call.
 > Mirror of the [Dijji Android SDK](https://github.com/urbaneyed/dijji-android).
-> Status: **v1.0.0-alpha** — backend live, SDK in active development.
+> Status: **v1.5.0-alpha** — backend live, SDK in active development.
 
 ## Quick start
 
@@ -144,7 +144,10 @@ Apache 2.0. See [LICENSE](LICENSE).
 |---|---|---|
 | v1.0-alpha | Two-line init, lifecycle auto-capture, custom events, user props, NSException crash capture, push token registration, deep-link routing | Shipped |
 | v1.1-alpha | Native in-app message renderer (banner / sheet / modal) with theme support, drag-to-dismiss, queue-and-present | Shipped |
-| v1.2-alpha | POSIX signal crash handler — catches pure-Swift crashes (fatalError, forced unwrap nil, array OOB) via SIGABRT/SIGTRAP/SIGSEGV/SIGBUS/SIGILL/SIGFPE. Marker-file pattern: write on crash via async-signal-safe APIs, send next launch | **Shipped** |
-| v1.3 | Mach exception port handler for stricter coverage &middot; backtrace symbolication via dSYM upload | Planned |
-| v1.3 | Live Activities (iOS 16+) &middot; Notification Service Extension for rich pushes | Q4 2026 |
-| v2.0 | SwiftUI-native message components &middot; Core Data offline queue | 2027 |
+| v1.2-alpha | POSIX signal crash handler — catches pure-Swift crashes (fatalError, forced unwrap nil, array OOB) via SIGABRT/SIGTRAP/SIGSEGV/SIGBUS/SIGILL/SIGFPE. Marker-file pattern: write on crash via async-signal-safe APIs, send next launch | Shipped |
+| v1.3.0-alpha | 4 new in-app formats (hero / nps / reactions / countdown) &middot; image support across banner/sheet/modal | Shipped |
+| v1.4.0-alpha | Live Activity bridge module (`DijjiLiveActivity`) for iOS 16+ | Shipped |
+| v1.5.0-alpha | In-app survey renderer — bottom sheet with progress bar, rating / radio / checkbox / yesno / text questions, configurable end screen, fire-and-forget answer + complete POSTs to `/t/survey` | **Shipped** |
+| v1.6 | Mach exception port handler for stricter coverage &middot; backtrace symbolication via dSYM upload | Planned |
+| v1.7 | Notification Service Extension for rich pushes &middot; SwiftUI-native message components | Planned |
+| v2.0 | Core Data offline queue &middot; symbolicated crash dashboard | 2027 |

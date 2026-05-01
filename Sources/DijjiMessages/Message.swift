@@ -15,6 +15,7 @@ public struct DijjiMessage {
         case nps          = "nps"
         case reactions    = "reactions"
         case countdown    = "countdown"
+        case survey       = "survey"
     }
 
     public let id: String
@@ -46,6 +47,11 @@ public struct DijjiMessage {
     // by `parsedDeadline`.
     public let deadline: Any?
     public let endedText: String?
+
+    // Survey config — full raw config bag, since surveys carry a
+    // structured questions list + end_screen the static fields above
+    // can't represent. SurveyView parses what it needs from this map.
+    public let rawConfig: [String: Any]
 
     /// Parse a single inbox JSON object. Returns nil on missing/bad fields
     /// rather than throwing — one bad message shouldn't kill the queue.
@@ -85,7 +91,8 @@ public struct DijjiMessage {
             thanks:    cfg["thanks"]     as? String,
             emojis:    emojis,
             deadline:  cfg["deadline"],
-            endedText: cfg["ended_text"] as? String
+            endedText: cfg["ended_text"] as? String,
+            rawConfig: cfg
         )
     }
 

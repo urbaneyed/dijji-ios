@@ -117,7 +117,7 @@ final class DijjiCoreTests: XCTestCase {
         // Test guards against accidentally dropping one in a refactor.
         let ctx = DeviceContext.snapshot()
         XCTAssertEqual(ctx["sdk_platform"] as? String, "ios")
-        XCTAssertEqual(ctx["sdk_version"] as? String, "1.0.0-alpha")
+        XCTAssertEqual(ctx["sdk_version"] as? String, "1.5.0-alpha")
         XCTAssertNotNil(ctx["app_version"])
         XCTAssertNotNil(ctx["bundle_id"])
         XCTAssertNotNil(ctx["timezone"])

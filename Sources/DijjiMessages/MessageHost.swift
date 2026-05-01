@@ -4,6 +4,12 @@ import UIKit
 #endif
 import DijjiCore
 
+/// Closure type for survey answer / complete POSTs. SurveyView calls this
+/// once per question (action=answer) and once at the end (action=complete).
+/// Implementation is wired in DijjiMessages.startPolling so the renderer
+/// stays decoupled from the Core's Api class.
+public typealias SurveyPostCallback = ([String: Any]) -> Void
+
 /// Coordinates in-app message presentation. One message visible at a time;
 /// new messages while one's on-screen go into a queue and present in
 /// arrival order. Renderers (BannerView / BottomSheetView / ModalView) all
@@ -17,6 +23,13 @@ final class MessageHost {
 
     static let shared = MessageHost()
     private init() {}
+
+    /// Set by DijjiMessages.startPolling so SurveyView can ship answers
+    /// back without depending on DijjiCore's private Api type. Wrapped
+    /// callers should DispatchQueue.global to keep UI off the network
+    /// path. nil = surveys still render but answers go nowhere (used in
+    /// tests).
+    var onSurveyPost: SurveyPostCallback?
 
     private var queue: [DijjiMessage] = []
     private var current: DijjiMessage?
@@ -103,6 +116,24 @@ final class MessageHost {
             )
         case .countdown:
             CountdownPresenter.present(
+                message: message, on: host,
+                onDismiss: { [weak self] reason in self?.didDismiss(message, reason: reason) }
+            )
+        case .survey:
+            // Skip surveys with no questions or missing response_id —
+            // delivering an empty form would be a no-op for the user and
+            // we can't correlate answers without the response_id.
+            let questions = (message.rawConfig["questions"] as? [[String: Any]]) ?? []
+            let responseAny = message.rawConfig["response_id"]
+            let responseId: Int?
+            if let n = responseAny as? Int { responseId = n }
+            else if let n = responseAny as? NSNumber { responseId = n.intValue }
+            else { responseId = nil }
+            if questions.isEmpty || responseId == nil {
+                didDismiss(message, reason: .autoExpired)
+                return
+            }
+            SurveyPresenter.present(
                 message: message, on: host,
                 onDismiss: { [weak self] reason in self?.didDismiss(message, reason: reason) }
             )

@@ -46,4 +46,14 @@ final class Api {
         }
         task.resume()
     }
+
+    /// Survey ingestion. action ∈ {answer, complete}. Fire-and-forget —
+    /// the response_id is server-stamped at delivery time so we don't
+    /// need a `start` round-trip; per-question answers + a final complete
+    /// are all the client posts. Failures are logged at debug level and
+    /// swallowed: the dashboard tolerates missing answers (the response
+    /// row exists server-side regardless).
+    func postSurvey(_ body: [String: Any]) {
+        post(path: "/t/survey", body: body, onComplete: { _ in })
+    }
 }
